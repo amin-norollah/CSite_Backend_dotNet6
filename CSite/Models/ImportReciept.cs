@@ -21,7 +21,7 @@ namespace CSite.Models
         [ForeignKey("Supplier")]
         public int? SupplierID { get; set; }
         [ForeignKey("User")]
-        public string UserName { get; set; }
+        public int? UserID { get; set; }
 
         public virtual ICollection<ImportProduct> ImportProducts { get; set; } = new HashSet<ImportProduct>();
 

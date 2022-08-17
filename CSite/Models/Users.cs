@@ -6,7 +6,8 @@ namespace CSite.Models
     public class Users
     {
         [Key]
-        public string UserName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
         public string Password { get; set; }
         public int Type { get; set; }
 

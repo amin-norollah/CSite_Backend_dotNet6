@@ -27,7 +27,7 @@ namespace CSite.Controllers
         public async Task<IActionResult> Login(Login userLogin)
         {
             var user = await _unitOfWork.GetRepository<Users>().GetFirstOrDefaultAsync(
-                predicate: x => x.UserName == userLogin.userName
+                predicate: x => x.Name == userLogin.userName
                  && x.Password == userLogin.password
                 );
 
@@ -38,7 +38,7 @@ namespace CSite.Controllers
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
                 var data = new List<Claim>();
-                data.Add(new Claim("username", user.UserName));
+                data.Add(new Claim("username", user.Name));
                 data.Add(new Claim("type", user.Type.ToString()));
 
                 var token = new JwtSecurityToken(
@@ -49,7 +49,7 @@ namespace CSite.Controllers
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
-                    userName = user.UserName,
+                    userName = user.Name,
                     type = user.Type,
                 });
             }

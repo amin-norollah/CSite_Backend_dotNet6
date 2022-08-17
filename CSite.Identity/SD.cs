@@ -44,8 +44,8 @@ namespace CSite.Identity
                     ClientId="CSite_client",
                     ClientSecrets= { new Secret("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV".Sha256())},
                     AllowedGrantTypes = GrantTypes.Code,
-                    RedirectUris={ "https://localhost:5004/signin-oidc" },
-                    PostLogoutRedirectUris={"https://localhost:5004/signout-callback-oidc" },
+                    RedirectUris={ "https://localhost:8088/signin-oidc" },
+                    PostLogoutRedirectUris={"https://localhost:8088/signout-callback-oidc" },
                     AllowedScopes=new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

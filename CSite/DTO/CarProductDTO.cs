@@ -1,11 +1,12 @@
-﻿namespace CSite.DTO
+﻿using CSite.Models;
+
+namespace CSite.DTO
 {
-    public class CarProductDTO
+    public class CarProductDTO 
     {
         public int Quantity { get; set; }
         public int? CarID { get; set; }
-        public int ProductID { get; set; }
-        public string ProductName { get; set; }
+        public ProductDTO Product { get; set; }
 
 
     }

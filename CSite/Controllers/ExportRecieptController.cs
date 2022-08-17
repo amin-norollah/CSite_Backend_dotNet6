@@ -47,7 +47,7 @@ namespace CSite.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TEntityDTO>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize);
+            return Ok(await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize));
         }
 
         /// <summary>
@@ -84,65 +84,65 @@ namespace CSite.Controllers
         /// Posting new item
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<TEntity>> PostTEntity(TEntityDTO TEntityDTO)
+        public async Task<ActionResult<TEntity>> PostTEntity(TEntityDTO exportRecieptDTO)
         {
             //mapping
-            var TEntity = _mapper.Map<TEntity>(TEntityDTO);
+            var exportReciept = _mapper.Map<TEntity>(exportRecieptDTO);
 
             //adding transaction
             Transactions transactions = new Transactions();
-            if (TEntity.CarID == null)
+            if (exportReciept.CarID == null)
             {
-                var customer = await _unitOfWork.GetRepository<Customer>().GetFirstOrDefaultAsync(predicate: x => x.ID == TEntityDTO.customerID);
+                var customer = await _unitOfWork.GetRepository<Customer>().GetFirstOrDefaultAsync(predicate: x => x.ID == exportRecieptDTO.CustomerID);
 
                 if (customer == null)
-                    return NotFound($"There is no customer with id '{TEntityDTO.customerID}'");
+                    return NotFound($"There is no customer with id '{exportRecieptDTO.CustomerID}'");
 
                 transactions = new Transactions()
                 {
-                    AccountID = TEntity.CustomerID,
+                    AccountID = exportReciept.CustomerID,
                     AccountType = (int)AccountType.Customer,
-                    Amount = TEntity.Remaining,
+                    Amount = exportReciept.Remaining,
                     Type = (int)TransType.Get,
-                    Date = TEntity.Date,
-                    OperationID = TEntity.ID,
+                    Date = exportReciept.Date,
+                    OperationID = exportReciept.ID,
                     Operation = (int)Operation.ExportReciept,
-                    UserName = TEntity.UserName,
+                    UserID = exportReciept.UserID ?? 0,
                 };
-                customer.Account += TEntity.Remaining;
+                customer.Account += exportReciept.Remaining;
 
                 _unitOfWork.GetRepository<Customer>().Update(customer);
             }
             else
             {
-                var car = await _unitOfWork.GetRepository<Car>().GetFirstOrDefaultAsync(predicate: x => x.ID == TEntityDTO.CarID);
+                var car = await _unitOfWork.GetRepository<Car>().GetFirstOrDefaultAsync(predicate: x => x.ID == exportRecieptDTO.CarID);
 
                 transactions = new Transactions()
                 {
-                    AccountID = TEntity.CarID,
+                    AccountID = exportReciept.CarID,
                     AccountType = (int)AccountType.Car,
-                    Amount = TEntity.Remaining,
+                    Amount = exportReciept.Remaining,
                     Type = (int)TransType.Get,
-                    Date = TEntity.Date,
-                    OperationID = TEntity.ID,
+                    Date = exportReciept.Date,
+                    OperationID = exportReciept.ID,
                     Operation = (int)Operation.ExportReciept,
-                    UserName = TEntity.UserName,
+                    UserID = exportReciept.UserID ?? 0,
                 };
-                car.Account += TEntity.Remaining;
+                car.Account += exportReciept.Remaining;
 
                 _unitOfWork.GetRepository<Car>().Update(car);
             }
 
-            _unitOfWork.GetRepository<TEntity>().Insert(TEntity);
+            _unitOfWork.GetRepository<TEntity>().Insert(exportReciept);
             _unitOfWork.GetRepository<Transactions>().Insert(transactions);
             await _unitOfWork.SaveChangesAsync();
 
             //
-            foreach (var item in TEntityDTO.Products)
+            foreach (var item in exportRecieptDTO.ExportProducts)
             {
                 //
                 var target = _mapper.Map<ExportProduct>(item);
-                target.ReceiptID = TEntity.ID;
+                target.ReceiptID = exportReciept.ID;
                 _unitOfWork.GetRepository<ExportProduct>().Insert(target);
 
                 //
@@ -151,7 +151,7 @@ namespace CSite.Controllers
                 _unitOfWork.GetRepository<Product>().Update(product);
 
                 //
-                if (TEntity.CarID != null)
+                if (exportReciept.CarID != null)
                 {
                     if (await _unitOfWork.GetRepository<CarProduct>().AnyAsync(w => w.ProductID == target.ProductID))
                     {
@@ -162,14 +162,14 @@ namespace CSite.Controllers
                     else
                         _unitOfWork.GetRepository<CarProduct>().Insert(new CarProduct()
                         {
-                            CarID = TEntity.CarID,
+                            CarID = exportReciept.CarID,
                             ProductID = item.ProductID,
                             Quantity = item.Quantity,
                         });
                 }
             }
             await _unitOfWork.SaveChangesAsync();
-            return CreatedAtAction("GetbyId", new { id = TEntity.ID }, _mapper.Map<TEntityDTO>(TEntity));
+            return CreatedAtAction("GetbyId", new { id = exportReciept.ID }, _mapper.Map<TEntityDTO>(exportReciept));
         }
 
         /// <summary>

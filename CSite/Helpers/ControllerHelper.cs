@@ -20,20 +20,31 @@ namespace CSite.Helpers
         }
 
 
-        public async Task<List<TEntityDTO>> GetAll<TEntity, TEntityDTO>(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> predicate = null)
+        public async Task<List<TEntityDTO>> GetAll<TEntity, TEntityDTO>(
+            int pageIndex, 
+            int pageSize,
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)
             where TEntity : class
             where TEntityDTO : class
         {
-            var outputs = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageIndex, pageSize: pageSize, predicate: predicate);
+            var outputs = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(
+                pageIndex: pageIndex,
+                pageSize: pageSize, 
+                predicate: predicate,
+                include: include);
             return _mapper.Map<List<TEntityDTO>>(outputs.ToList());
         }
 
 
-        public async Task<TEntityDTO> GetById<TEntity, TEntityDTO>(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntityDTO> GetById<TEntity, TEntityDTO>(
+            Expression<Func<TEntity, bool>> predicate,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null
+            )
             where TEntity : class
             where TEntityDTO : class
         {
-            var output = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: predicate);
+            var output = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: predicate, include: include);
             return _mapper.Map<TEntityDTO>(output);
         }
 

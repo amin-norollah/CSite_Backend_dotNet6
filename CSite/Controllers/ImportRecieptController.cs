@@ -93,7 +93,7 @@ namespace CSite.Controllers
                 Date = TEntity.Date,
                 OperationID = TEntity.ID,
                 Operation = (int)Operation.ImportReciept,
-                UserName = TEntity.UserName,
+                UserID = TEntity.UserID?? 0,
 
             };
             await _unitOfWork.GetRepository<Transactions>().InsertAsync(tr);
@@ -108,10 +108,10 @@ namespace CSite.Controllers
             //
             foreach (var item in TEntityDTO.importProducts)
             {
-                item.ImportReceiptID = TEntity.ID;
+                item.ID = TEntity.ID;
                 await _unitOfWork.GetRepository<ImportProduct>().InsertAsync(_mapper.Map<ImportProduct>(item));
 
-                var product = await _unitOfWork.GetRepository<Product>().FindAsync(item.ProductID);
+                var product = await _unitOfWork.GetRepository<Product>().FindAsync(item.Product.ID);
                 product.Quantity += item.Quantity;
                 _unitOfWork.GetRepository<Product>().Update(product);
             }

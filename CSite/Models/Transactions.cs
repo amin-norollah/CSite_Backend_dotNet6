@@ -13,7 +13,7 @@ namespace CSite.Models
         public int? OperationID { get; set; }
         public int Operation { get; set; }
         public DateTime Date { get; set; }
-        public string UserName { get; set; }
+        public int UserID { get; set; }
         public string Notes { get; set; }
 
     }

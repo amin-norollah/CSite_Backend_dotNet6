@@ -22,7 +22,7 @@ namespace CSite.Models
         [ForeignKey("Customer")]
         public int? CustomerID { get; set; }
         [ForeignKey("User")]
-        public string UserName { get; set; }
+        public int? UserID { get; set; }
         [ForeignKey("Car")]
         public int? CarID { get; set; }
         public virtual ICollection<ExportProduct> ExportProducts { get; set; } = new HashSet<ExportProduct>();

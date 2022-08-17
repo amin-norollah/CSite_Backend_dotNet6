@@ -28,7 +28,7 @@ namespace CSite.Controllers
         [HttpGet]
         public async Task<ActionResult<List<TEntity>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _controllerHelper.GetAll<TEntity, TEntity>(pageIndex, pageSize);
+            return Ok(await _controllerHelper.GetAll<TEntity, TEntity>(pageIndex, pageSize));
         }
 
         /// <summary>
