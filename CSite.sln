@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSite", "CSite\CSite.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSite.Shared", "CSite.Shared\CSite.Shared.csproj", "{35BE82E6-659A-498E-B03D-8B4F49CDB67B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSite.Identity", "CSite.Identity\CSite.Identity.csproj", "{F17DC377-4C41-43DD-8D84-97A6CD8A6E93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{35BE82E6-659A-498E-B03D-8B4F49CDB67B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35BE82E6-659A-498E-B03D-8B4F49CDB67B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35BE82E6-659A-498E-B03D-8B4F49CDB67B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F17DC377-4C41-43DD-8D84-97A6CD8A6E93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F17DC377-4C41-43DD-8D84-97A6CD8A6E93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F17DC377-4C41-43DD-8D84-97A6CD8A6E93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F17DC377-4C41-43DD-8D84-97A6CD8A6E93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

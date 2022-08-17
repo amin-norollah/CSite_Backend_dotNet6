@@ -1,136 +1,136 @@
-﻿using CSite.DTO;
-using CSite.DTO.Extension_Methods;
+﻿using AutoMapper;
+using CSite.DbContexts;
+using CSite.DTO;
+using CSite.Helpers;
 using CSite.Models;
+using CSite.Shared.Interfaces;
 using CSite.Structures;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CSite.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ImportRecieptController : ControllerBase
+    public class ImportRecieptController : ImportRecieptControllerGeneric<ImportReciept, ImportRecieptDTO>
     {
-        private readonly CSiteDbContext _context;
+        public ImportRecieptController(
+            IUnitOfWork<CSiteDbContext> unitOfWork,
+            IMapper mapper,
+            ControllerHelper _controllerHelper) : base(unitOfWork, mapper, _controllerHelper) { }
+    }
 
-        public ImportRecieptController(CSiteDbContext context)
+    public class ImportRecieptControllerGeneric<TEntity, TEntityDTO> : ControllerBase
+        where TEntity : ImportReciept
+        where TEntityDTO : ImportRecieptDTO
+    {
+        private readonly ControllerHelper _controllerHelper;
+        private readonly IUnitOfWork<CSiteDbContext> _unitOfWork;
+        private readonly IMapper _mapper;
+
+        public ImportRecieptControllerGeneric(
+            IUnitOfWork<CSiteDbContext> unitOfWork,
+            IMapper mapper,
+            ControllerHelper controllerHelper
+            )
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _controllerHelper = controllerHelper;
         }
 
-        // GET: api/ImportReciept
+        /// <summary>
+        /// Getting items
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ImportRecieptDTO>>> GetImportReciepts()
+        public async Task<ActionResult<IEnumerable<TEntityDTO>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _context.ImportReciepts.Select(A => A.ImportRecieptToDTO()).ToListAsync();
-
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize);
         }
 
-        // GET: api/ImportReciept/5
+
+        /// <summary>
+        /// Geting an item by id
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ImportRecieptDTO>> GetImportReciept(int id)
+        public async Task<ActionResult<TEntityDTO>> GetbyId(int id)
         {
-            var imporReciept = await _context.ImportReciepts.FindAsync(id);
-            List<ImportProduct> importproducts = _context.ImportProducts.Where(w => w.ReceiptID == id).ToList();
+            var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(predicate: x => x.ID == id);
 
-            if (imporReciept == null)
-            {
+            if (result == null)
                 return NotFound();
-            }
-            ImportRecieptDTO importRecieptDTO = imporReciept.ImportRecieptToDTO();
-            importRecieptDTO.importProducts = importproducts.Select(A => A.ImportProductToDTO()).ToArray();
-            return importRecieptDTO;
+            return Ok(result);
         }
 
-        // PUT: api/ImportReciept/5
+        /// <summary>
+        /// Updating item
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutImportReciept(int id, ImportRecieptDTO importRecieptDTO)
+        public async Task<IActionResult> PutTEntity(int id, TEntityDTO TEntityDTO)
         {
-            ImportReciept importReciept = importRecieptDTO.DTOToImportReciept();
+            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(TEntityDTO, predicate: x => x.ID == id);
 
-            if (id != importReciept.ID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(importReciept).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ImportRecieptExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-
-            return NoContent();
+            if (result)
+                return NoContent();
+            else return BadRequest();
         }
 
-        // POST: api/ImportReciept
+        /// <summary>
+        /// Posting new item
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<ImportReciept>> PostImportReciept(ImportRecieptDTO importRecieptDTO)
+        public async Task<ActionResult<TEntity>> PostTEntity(TEntityDTO TEntityDTO)
         {
-            ImportReciept importReciept = importRecieptDTO.DTOToImportReciept();
+            //map
+            var TEntity = _mapper.Map<TEntity>(TEntityDTO);
+
             Transactions tr = new Transactions()
             {
-                AccountID = importReciept.SupplierID,
+                AccountID = TEntity.SupplierID,
                 AccountType = (int)AccountType.Supplier,
-                Amount = importReciept.Remaining,
+                Amount = TEntity.Remaining,
                 Type = (int)TransType.Paid,
-                Date = importReciept.Date,
-                OperationID = importReciept.ID,
+                Date = TEntity.Date,
+                OperationID = TEntity.ID,
                 Operation = (int)Operation.ImportReciept,
-                UserName = importReciept.UserName,
+                UserName = TEntity.UserName,
 
             };
-            Supplier sup = _context.Suppliers.Find(importReciept.SupplierID);
-            sup.Account += importReciept.Remaining;
-            _context.Entry(sup).State = EntityState.Modified;
-            _context.Transactions.Add(tr);
-            _context.ImportReciepts.Add(importReciept);
-            await _context.SaveChangesAsync();
-            foreach (var item in importRecieptDTO.importProducts)
+            await _unitOfWork.GetRepository<Transactions>().InsertAsync(tr);
+            await _unitOfWork.GetRepository<TEntity>().InsertAsync(TEntity);
+
+            var sup = await _unitOfWork.GetRepository<Supplier>().FindAsync(TEntity.SupplierID);
+            sup.Account += TEntity.Remaining;
+            _unitOfWork.GetRepository<Supplier>().Update(sup);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            //
+            foreach (var item in TEntityDTO.importProducts)
             {
+                item.ImportReceiptID = TEntity.ID;
+                await _unitOfWork.GetRepository<ImportProduct>().InsertAsync(_mapper.Map<ImportProduct>(item));
 
-                item.ImportReceiptID = importReciept.ID;
-                _context.ImportProducts.Add(item.DTOToImportProduct());
-
-                Product product = _context.Products.Find(item.ProductID);
+                var product = await _unitOfWork.GetRepository<Product>().FindAsync(item.ProductID);
                 product.Quantity += item.Quantity;
-                _context.Entry(product).State = EntityState.Modified;
+                _unitOfWork.GetRepository<Product>().Update(product);
             }
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
-            return CreatedAtAction("GetImportReciept", new { id = importReciept.ID }, importReciept.ImportRecieptToDTO());
+            return CreatedAtAction("GetbyId", new { id = TEntity.ID }, _mapper.Map<ImportProductDTO>(TEntity));
         }
 
-        // DELETE: api/ImportReciept/5
+        /// <summary>
+        /// Deleting the existing item
+        /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteImportReciept(int id)
+        public async Task<IActionResult> DeleteTEntity(int id)
         {
-            var importReciept = await _context.ImportReciepts.FindAsync(id);
-            if (importReciept == null)
-            {
-                return NotFound();
-            }
+            var result = await _controllerHelper.Remove<ImportProduct>(id, predicate: x => x.ID == id);
 
-            _context.ImportReciepts.Remove(importReciept);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ImportRecieptExists(int id)
-        {
-            return _context.ImportReciepts.Any(e => e.ID == id);
+            if (result)
+                return NoContent();
+            else return BadRequest();
         }
     }
 }

@@ -1,7 +1,7 @@
 using AutoWrapper;
 using CSite.Configurations;
+using CSite.DbContexts;
 using CSite.Helpers;
-using CSite.Models;
 using CSite.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -53,7 +53,7 @@ builder.Services.AddVersionedApiExplorer(setup =>
 //swagger
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("1.0", new OpenApiInfo { Title = "FaraWAMS Main API", Version = "1.0" });
+    options.SwaggerDoc("1.0", new OpenApiInfo { Title = "CSite API", Version = "1.0" });
 });
 
 // Adding simple and basic authentication
@@ -80,7 +80,7 @@ builder.Services.AddCors(o =>
 });
 
 // Adding ControllerHelper
-builder.Services.AddSingleton<ControllerHelper>();
+builder.Services.AddScoped<ControllerHelper>();
 
 //disable the automatic 400 behavior
 builder.Services.Configure<ApiBehaviorOptions>(options =>

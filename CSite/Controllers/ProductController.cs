@@ -1,107 +1,86 @@
 ﻿using CSite.DTO;
-using CSite.DTO.Extension_Methods;
+using CSite.Helpers;
 using CSite.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CSite.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController : ProductControllerGeneric<Product, ProductDTO>
     {
-        private readonly CSiteDbContext _context;
+        public ProductController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
+    }
 
-        public ProductController(CSiteDbContext context)
+    public class ProductControllerGeneric<TEntity, TEntityDTO> : ControllerBase
+        where TEntity : Product
+        where TEntityDTO : ProductDTO
+    {
+        private readonly ControllerHelper _controllerHelper;
+
+        public ProductControllerGeneric(ControllerHelper controllerHelper)
         {
-            _context = context;
+            _controllerHelper = controllerHelper;
         }
 
-        // GET: api/Product
+        /// <summary>
+        /// Getting items
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts()
+        public async Task<ActionResult<List<TEntityDTO>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _context.Products.Select(A => A.ProductToDTO()).ToListAsync();
-
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize);
         }
 
-        // GET: api/Product/5
+        /// <summary>
+        /// Geting an item by id
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDTO>> GetProduct(int id)
+        public async Task<ActionResult<TEntityDTO>> GetbyId(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(predicate: x => x.ID == id);
 
-            if (product == null)
-            {
+            if (result == null)
                 return NotFound();
-            }
-
-            return product.ProductToDTO();
+            return Ok(result);
         }
 
-        // PUT: api/Product/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Updating item
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, ProductDTO productDTO)
+        public async Task<IActionResult> PutItem(int id, TEntityDTO productDTO)
         {
-            Product product = productDTO.DTOToProduct();
-            if (id != product.ID)
-            {
-                return BadRequest();
-            }
+            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(productDTO, predicate: x => x.ID == id);
 
-            _context.Entry(product).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-
-            return NoContent();
+            if (result)
+                return NoContent();
+            else return BadRequest();
         }
 
-        // POST: api/Product
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Posting new item
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(ProductDTO productDTO)
+        public async Task<ActionResult<TEntity>> PostItem(TEntityDTO productDTO)
         {
-            Product product = productDTO.DTOToProduct();
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            var result = await _controllerHelper.Create<TEntity, TEntityDTO>(productDTO);
 
-            return CreatedAtAction("GetProduct", new { id = product.ID }, product);
+            return CreatedAtAction("GetbyId", new { id = result.ID }, result);
         }
 
-        // DELETE: api/Product/5
+        /// <summary>
+        /// Deleting the existing item
+        /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteItem(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            var result = await _controllerHelper.Remove<TEntity>(id, predicate: x => x.ID == id);
 
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.ID == id);
+            if (result)
+                return NoContent();
+            else return BadRequest();
         }
     }
 }

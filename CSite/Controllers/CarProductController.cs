@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CSite.DbContexts;
 using CSite.DTO;
-using CSite.DTO.Extension_Methods;
 using CSite.Models;
 using CSite.Shared.Interfaces;
 using Microsoft.AspNetCore.Mvc;

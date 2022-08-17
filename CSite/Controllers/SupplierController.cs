@@ -1,106 +1,86 @@
 ﻿using CSite.DTO;
-using CSite.DTO.Extension_Methods;
+using CSite.Helpers;
 using CSite.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CSite.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class SupplierController : ControllerBase
+    public class SupplierController : SupplierControllerGeneric<Supplier, SupplierDTO>
     {
-        private readonly CSiteDbContext _context;
+        public SupplierController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
+    }
 
-        public SupplierController(CSiteDbContext context)
+    public class SupplierControllerGeneric<TEntity, TEntityDTO> : ControllerBase
+        where TEntity : Supplier
+        where TEntityDTO : SupplierDTO
+    {
+        private readonly ControllerHelper _controllerHelper;
+
+        public SupplierControllerGeneric(ControllerHelper controllerHelper)
         {
-            _context = context;
+            _controllerHelper = controllerHelper;
         }
 
-        // GET: api/Supplier
+        /// <summary>
+        /// Getting items
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SupplierDTO>>> GetSuppliers()
+        public async Task<ActionResult<List<TEntityDTO>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _context.Suppliers.Select(w => w.SupplierToDTO()).ToListAsync();
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize);
         }
 
-        // GET: api/Supplier/5
+        /// <summary>
+        /// Geting an item by id
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<SupplierDTO>> GetSupplier(int id)
+        public async Task<ActionResult<TEntityDTO>> GetbyId(int id)
         {
-            var supplier = await _context.Suppliers.FindAsync(id);
+            var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(predicate: x => x.ID == id);
 
-            if (supplier == null)
-            {
+            if (result == null)
                 return NotFound();
-            }
-
-            return supplier.SupplierToDTO();
+            return Ok(result);
         }
 
-        // PUT: api/Supplier/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Updating item
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSupplier(int id, SupplierDTO supplierDTO)
+        public async Task<IActionResult> PutItem(int id, TEntityDTO supplierDTO)
         {
-            Supplier supplier = supplierDTO.DTOToSupplier();
-            if (id != supplier.ID)
-            {
-                return BadRequest();
-            }
+            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(supplierDTO, predicate: x => x.ID == id);
 
-            _context.Entry(supplier).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SupplierExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetSupplier", new { id = supplier.ID }, supplier);
+            if (result)
+                return NoContent();
+            else return BadRequest();
         }
 
-        // POST: api/Supplier
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Posting new item
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Supplier>> PostSupplier(SupplierDTO supplierDTO)
+        public async Task<ActionResult<TEntity>> PostItem(TEntityDTO supplierDTO)
         {
-            Supplier supplier = supplierDTO.DTOToSupplier();
-            _context.Suppliers.Add(supplier);
-            await _context.SaveChangesAsync();
+            var result = await _controllerHelper.Create<TEntity, TEntityDTO>(supplierDTO);
 
-            return CreatedAtAction("GetSupplier", new { id = supplier.ID }, supplier);
+            return CreatedAtAction("GetbyId", new { id = result.ID }, result);
         }
 
-        // DELETE: api/Supplier/5
+        /// <summary>
+        /// Deleting the existing item
+        /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSupplier(int id)
+        public async Task<IActionResult> DeleteItem(int id)
         {
-            var supplier = await _context.Suppliers.FindAsync(id);
-            if (supplier == null)
-            {
-                return NotFound();
-            }
+            var result = await _controllerHelper.Remove<TEntity>(id, predicate: x => x.ID == id);
 
-            _context.Suppliers.Remove(supplier);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool SupplierExists(int id)
-        {
-            return _context.Suppliers.Any(e => e.ID == id);
+            if (result)
+                return NoContent();
+            else return BadRequest();
         }
     }
 }

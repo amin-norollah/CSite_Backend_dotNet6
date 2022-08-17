@@ -9,11 +9,18 @@ namespace CSite.Controllers
     [ApiVersion("1.0")]
     [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ExportProductController : ControllerBase
+    public class ExportProductController : ExportProductControllerGeneric<ExportProduct, ExportProductDTO>
+    {
+        public ExportProductController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
+    }
+
+    public class ExportProductControllerGeneric<TEntity, TEntityDTO> : ControllerBase
+        where TEntity : ExportProduct
+        where TEntityDTO : ExportProductDTO
     {
         private readonly ControllerHelper _controllerHelper;
 
-        public ExportProductController(ControllerHelper controllerHelper)
+        public ExportProductControllerGeneric(ControllerHelper controllerHelper)
         {
             _controllerHelper = controllerHelper;
         }
@@ -22,18 +29,18 @@ namespace CSite.Controllers
         /// Getting items
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ExportProductDTO>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
+        public async Task<ActionResult<IEnumerable<TEntityDTO>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _controllerHelper.GetAll<ExportProduct, ExportProductDTO>(pageIndex, pageSize);
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize);
         }
 
         /// <summary>
         /// Geting an item by id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ExportProductDTO>> GetbyId(int id)
+        public async Task<ActionResult<TEntityDTO>> GetbyId(int id)
         {
-            var result = await _controllerHelper.GetById<ExportProduct, ExportProductDTO>(predicate: x => x.ID == id);
+            var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(predicate: x => x.ID == id);
 
             if (result == null)
                 return NotFound();
@@ -44,10 +51,10 @@ namespace CSite.Controllers
         /// Updating item
         /// </summary>
         [HttpPut("{id}/{ReceiptID}")]
-        public async Task<IActionResult> PutItem(int id, int ReceiptID, ExportProductDTO exportProductDTO)
+        public async Task<IActionResult> PutItem(int id, int ReceiptID, TEntityDTO TEntityDTO)
         {
-            var result = await _controllerHelper.Update<ExportProduct, ExportProductDTO>(
-                exportProductDTO,
+            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(
+                TEntityDTO,
                 include: source => source.Include(y => y.Product).Include(y => y.ExportReciept),
                 predicate: x => x.ProductID == id && x.ReceiptID == ReceiptID
                 );
@@ -61,9 +68,9 @@ namespace CSite.Controllers
         /// Posting new item
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> PostItem(ExportProductDTO[] exportProductDTO)
+        public async Task<IActionResult> PostItem(TEntityDTO[] TEntityDTO)
         {
-            await _controllerHelper.Create<ExportProduct, ExportProductDTO>(exportProductDTO);
+            await _controllerHelper.Create<TEntity, TEntityDTO>(TEntityDTO);
 
             return NoContent();
         }
@@ -74,7 +81,7 @@ namespace CSite.Controllers
         [HttpDelete("{id}/{ReceiptID}")]
         public async Task<IActionResult> DeleteItem(int id, int ReceiptID)
         {
-            var result = await _controllerHelper.Remove<ExportProduct>(
+            var result = await _controllerHelper.Remove<TEntity>(
                 id,
                 include: source => source.Include(y => y.Product).Include(y => y.ExportReciept),
                 predicate: x => x.ProductID == id && x.ReceiptID == ReceiptID);

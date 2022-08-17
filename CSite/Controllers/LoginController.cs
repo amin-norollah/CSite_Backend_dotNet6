@@ -1,5 +1,7 @@
-﻿using CSite.DTO;
+﻿using CSite.DbContexts;
+using CSite.DTO;
 using CSite.Models;
+using CSite.Shared.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,24 +10,30 @@ using System.Text;
 
 namespace CSite.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly CSiteDbContext _context;
+        private readonly IUnitOfWork<CSiteDbContext> _unitOfWork;
 
-        public LoginController(CSiteDbContext context)
+        public LoginController(IUnitOfWork<CSiteDbContext> unitOfWork)
+
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(Login userLogin)
         {
+            var user = await _unitOfWork.GetRepository<Users>().GetFirstOrDefaultAsync(
+                predicate: x => x.UserName == userLogin.userName
+                 && x.Password == userLogin.password
+                );
 
-            Users user = _context.Users.Where(n => n.UserName == userLogin.userName && n.Password == userLogin.password).FirstOrDefault();
             if (user != null)
             {
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my_sercret_key_123456"));
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV"));
 
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -49,9 +57,6 @@ namespace CSite.Controllers
             {
                 return Unauthorized();
             }
-
         }
-
-
     }
 }

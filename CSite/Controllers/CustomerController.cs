@@ -8,11 +8,18 @@ namespace CSite.Controllers
     [ApiVersion("1.0")]
     [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController : CustomerControllerGeneric<Customer, CustomerDTO>
+    {
+        public CustomerController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
+    }
+
+    public class CustomerControllerGeneric<TEntity, TEntityDTO> : ControllerBase
+        where TEntity : Customer
+        where TEntityDTO : CustomerDTO
     {
         private readonly ControllerHelper _controllerHelper;
 
-        public CustomerController(ControllerHelper controllerHelper)
+        public CustomerControllerGeneric(ControllerHelper controllerHelper)
         {
             _controllerHelper = controllerHelper;
         }
@@ -21,18 +28,18 @@ namespace CSite.Controllers
         /// Getting items
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
+        public async Task<ActionResult<List<TEntityDTO>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _controllerHelper.GetAll<Customer, CustomerDTO>(pageIndex, pageSize);
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize);
         }
 
         /// <summary>
         /// Geting an item by id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<CustomerDTO>> GetbyId(int id)
+        public async Task<ActionResult<TEntityDTO>> GetbyId(int id)
         {
-            var result = await _controllerHelper.GetById<Customer, CustomerDTO>(predicate: x => x.ID == id);
+            var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(predicate: x => x.ID == id);
 
             if (result == null)
                 return NotFound();
@@ -43,9 +50,9 @@ namespace CSite.Controllers
         /// Updating item
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(int id, CustomerDTO customerDTO)
+        public async Task<IActionResult> PutItem(int id, TEntityDTO customerDTO)
         {
-            var result = await _controllerHelper.Update<Customer, CustomerDTO>(customerDTO, predicate: x => x.ID == id);
+            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(customerDTO, predicate: x => x.ID == id);
 
             if (result)
                 return NoContent();
@@ -56,9 +63,9 @@ namespace CSite.Controllers
         /// Posting new item
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostItem(CustomerDTO customerDTO)
+        public async Task<ActionResult<TEntity>> PostItem(TEntityDTO customerDTO)
         {
-            var result = await _controllerHelper.Create<Customer, CustomerDTO>(customerDTO);
+            var result = await _controllerHelper.Create<TEntity, TEntityDTO>(customerDTO);
 
             return CreatedAtAction("GetbyId", new { id = result.ID }, result);
         }
@@ -69,7 +76,7 @@ namespace CSite.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id)
         {
-            var result = await _controllerHelper.Remove<Customer>(id, predicate: x => x.ID == id);
+            var result = await _controllerHelper.Remove<TEntity>(id, predicate: x => x.ID == id);
 
             if (result)
                 return NoContent();

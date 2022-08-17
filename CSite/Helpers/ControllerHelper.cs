@@ -20,11 +20,11 @@ namespace CSite.Helpers
         }
 
 
-        public async Task<List<TEntityDTO>> GetAll<TEntity, TEntityDTO>(int pageIndex, int pageSize)
+        public async Task<List<TEntityDTO>> GetAll<TEntity, TEntityDTO>(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> predicate = null)
             where TEntity : class
             where TEntityDTO : class
         {
-            var outputs = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageIndex, pageSize: pageSize);
+            var outputs = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageIndex, pageSize: pageSize, predicate: predicate);
             return _mapper.Map<List<TEntityDTO>>(outputs.ToList());
         }
 

@@ -1,118 +1,92 @@
 ﻿using CSite.DTO;
-using CSite.DTO.Extension_Methods;
+using CSite.Helpers;
 using CSite.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CSite.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class TransactionsController : ControllerBase
+    public class TransactionsController : TransactionsControllerGeneric<Transactions, TransactionsDTO>
     {
-        private readonly CSiteDbContext _context;
+        public TransactionsController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
+    }
 
-        public TransactionsController(CSiteDbContext context)
+    public class TransactionsControllerGeneric<TEntity, TEntityDTO> : ControllerBase
+        where TEntity : Transactions
+        where TEntityDTO : TransactionsDTO
+    {
+        private readonly ControllerHelper _controllerHelper;
+
+        public TransactionsControllerGeneric(ControllerHelper controllerHelper)
         {
-            _context = context;
+            _controllerHelper = controllerHelper;
         }
 
-        // GET: api/Transactions
+        /// <summary>
+        /// Getting items
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TransactionsDTO>>> GetTransactions()
+        public async Task<ActionResult<List<TEntityDTO>>> GetAll([FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _context.Transactions.Select(A => A.TransactionsToDTO()).ToListAsync();
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize);
         }
 
-        // GET: api/Transactions/5
+        /// <summary>
+        /// Geting an item by id
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<TransactionsDTO>> GetTransactions(int id)
+        public async Task<ActionResult<List<TEntityDTO>>> GetbyId(int id, [FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            var transactions = await _context.Transactions.FindAsync(id);
-
-            if (transactions == null)
-            {
-                return NotFound();
-            }
-
-            return transactions.TransactionsToDTO();
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize, predicate: x => x.ID == id);
         }
+
+        /// <summary>
+        /// Geting an item by id and type
+        /// </summary>
         [HttpGet("{id}/{type}")]
-        public async Task<ActionResult<TransactionsDTO>> GetTransactions(int id, int type)
+        public async Task<ActionResult<List<TEntityDTO>>> GetbyIdAndType(int id, int type, [FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            List<Transactions> transactions = await _context.Transactions.Where(A => A.AccountType == type && A.AccountID == id).ToListAsync();
-
-            if (transactions == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(transactions.Select(A => A.TransactionsToDTO()));
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize, predicate: x => x.AccountType == type && x.AccountID == id);
         }
 
-        // PUT: api/Transactions/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Updating item
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransactions(int id, TransactionsDTO transactionsDTO)
+        public async Task<IActionResult> PutItem(int id, TEntityDTO transactionsDTO)
         {
-            Transactions transactions = transactionsDTO.DTOTOTransactions();
-            if (id != transactions.ID)
-            {
-                return BadRequest();
-            }
+            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(transactionsDTO, predicate: x => x.ID == id);
 
-            _context.Entry(transactions).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransactionsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            if (result)
+                return NoContent();
+            else return BadRequest();
         }
 
-        // POST: api/Transactions
+
+        /// <summary>
+        /// Posting new item
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Transactions>> PostTransactions(TransactionsDTO transactionsDTO)
+        public async Task<ActionResult<TEntity>> PostItem(TEntityDTO transactionsDTO)
         {
-            Transactions transactions = transactionsDTO.DTOTOTransactions();
+            var result = await _controllerHelper.Create<TEntity, TEntityDTO>(transactionsDTO);
 
-            _context.Transactions.Add(transactions);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTransactions", new { id = transactions.ID }, transactions);
+            return CreatedAtAction("GetbyId", new { id = result.ID }, result);
         }
 
-        // DELETE: api/Transactions/5
+        /// <summary>
+        /// Deleting the existing item
+        /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransactions(int id)
+        public async Task<IActionResult> DeleteItem(int id)
         {
-            var transactions = await _context.Transactions.FindAsync(id);
-            if (transactions == null)
-            {
-                return NotFound();
-            }
+            var result = await _controllerHelper.Remove<TEntity>(id, predicate: x => x.ID == id);
 
-            _context.Transactions.Remove(transactions);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool TransactionsExists(int id)
-        {
-            return _context.Transactions.Any(e => e.ID == id);
+            if (result)
+                return NoContent();
+            else return BadRequest();
         }
     }
 }
