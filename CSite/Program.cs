@@ -10,11 +10,22 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 using System.Text;
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((ctx, lc) => lc
+    .WriteTo.File(
+                    path: "logs\\log-.txt",
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+                    rollingInterval: RollingInterval.Day,
+                    restrictedToMinimumLevel: LogEventLevel.Warning
+                ));
+
 ConfigurationManager Configuration = builder.Configuration;
 
 // Add services to the container.
@@ -22,14 +33,14 @@ builder.Services.AddControllers();
 
 // DB context and unit of work
 builder.Services
-    .AddDbContext<CSiteDbContext>(opt =>
+    .AddDbContext<CSiteDBContext>(opt =>
         opt.UseSqlServer(Configuration.GetConnectionString("sqlConnection"), sqlServerOptions =>
         {
-            var assembly = typeof(CSiteDbContext).Assembly;
+            var assembly = typeof(CSiteDBContext).Assembly;
             var assemblyName = assembly.GetName();
 
             sqlServerOptions.MigrationsAssembly(assemblyName.Name);
-        })).AddUnitOfWork<CSiteDbContext>();
+        })).AddUnitOfWork<CSiteDBContext>();
 
 builder.Services.AddEndpointsApiExplorer();
 

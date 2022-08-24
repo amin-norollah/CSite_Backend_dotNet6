@@ -1,6 +1,5 @@
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\bin\Debug\net6.0\CSite.Shared.deps.json
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\bin\Debug\net6.0\CSite.Shared.dll
-G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\bin\Debug\net6.0\ref\CSite.Shared.dll
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\bin\Debug\net6.0\CSite.Shared.pdb
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\obj\Debug\net6.0\CSite.Shared.csproj.AssemblyReference.cache
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\obj\Debug\net6.0\CSite.Shared.GeneratedMSBuildEditorConfig.editorconfig
@@ -10,3 +9,4 @@ G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\obj\Debug\net6.0\CSite.Shared
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\obj\Debug\net6.0\CSite.Shared.dll
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\obj\Debug\net6.0\ref\CSite.Shared.dll
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\obj\Debug\net6.0\CSite.Shared.pdb
+G:\Amin\Code\Github\CSite_Backend_Net\CSite.Shared\obj\Debug\net6.0\refint\CSite.Shared.dll

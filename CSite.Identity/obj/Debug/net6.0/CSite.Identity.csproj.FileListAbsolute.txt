@@ -7,7 +7,6 @@ G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\CSite.Iden
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\CSite.Identity.deps.json
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\CSite.Identity.runtimeconfig.json
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\CSite.Identity.dll
-G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\ref\CSite.Identity.dll
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\CSite.Identity.pdb
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\refs\Microsoft.AspNetCore.Antiforgery.dll
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\refs\Microsoft.AspNetCore.Authentication.Abstractions.dll
@@ -387,3 +386,4 @@ G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\CSite.Iden
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\ref\CSite.Identity.dll
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\CSite.Identity.pdb
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\CSite.Identity.genruntimeconfig.cache
+G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\refint\CSite.Identity.dll

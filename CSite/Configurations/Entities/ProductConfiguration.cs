@@ -4,30 +4,30 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CSite.Configurations.Entities
 {
-    public class ProductConfiguration : IEntityTypeConfiguration<Product>
+    public class ProductConfiguration : IEntityTypeConfiguration<Products>
     {
-        public void Configure(EntityTypeBuilder<Product> builder)
+        public void Configure(EntityTypeBuilder<Products> builder)
         {
             builder.HasData(
-                new Product
+                new Products
                 {
-                    ID = 300,
+                    Id = 300,
                     Name = "New Car 1",
                     BuyingPrice = 10300,
                     SellingPrice = 11660,
                     Quantity = 10
                 },
-                new Product
+                new Products
                 {
-                    ID = 301,
+                    Id = 301,
                     Name = "New Car 2",
                     BuyingPrice = 8400,
                     SellingPrice = 9458,
                     Quantity = 5
                 },
-                new Product
+                new Products
                 {
-                    ID = 302,
+                    Id = 302,
                     Name = "New Car 3",
                     BuyingPrice = 15790,
                     SellingPrice = 17820,

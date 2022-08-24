@@ -1,21 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CSite.Models
 {
-    public class Users
+    public partial class Users
     {
-        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
         public int Type { get; set; }
+        public int? CarId { get; set; }
 
-        [ForeignKey("Car")]
-        public int? CarID { get; set; }
-        public virtual Car Car { get; set; }
-        public virtual ICollection<ImportReciept> ImportReciepts { get; set; } = new HashSet<ImportReciept>();
-        public virtual ICollection<ExportReciept> ExportReciepts { get; set; } = new HashSet<ExportReciept>();
-
+        public virtual Cars Car { get; set; }
+        public virtual ICollection<ExportReciepts> ExportReciepts { get; set; }
+        public virtual ICollection<ImportReciepts> ImportReciepts { get; set; }
     }
 }

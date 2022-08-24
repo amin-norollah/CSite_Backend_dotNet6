@@ -9,14 +9,14 @@ namespace CSite.Controllers
     [ApiVersion("1.0")]
     [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class CarProductController : CarProductControllerGeneric<CarProduct, CarProductDTO>
+    public class CarProductController : CarProductControllerGeneric<CarProducts, CarProductsDTO>
     {
         public CarProductController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
     }
 
     public class CarProductControllerGeneric<TEntity, TEntityDTO> : ControllerBase
-        where TEntity : CarProduct
-        where TEntityDTO : CarProductDTO
+        where TEntity : CarProducts
+        where TEntityDTO : CarProductsDTO
     {
         private readonly ControllerHelper _controllerHelper;
 
@@ -26,58 +26,64 @@ namespace CSite.Controllers
         }
 
         /// <summary>
-        /// Getting items by carID
+        /// Getting items by carId
         /// </summary>
-        [HttpGet("{carID}")]
-        public async Task<ActionResult<List<TEntityDTO>>> GetAll(int carID, [FromQuery] int pageIndex = 1, int pageSize = 20)
+        [HttpGet("{carId}")]
+        public async Task<ActionResult<List<TEntityDTO>>> GetAll(int carId, [FromQuery] int pageIndex = 1, int pageSize = 20)
         {
             return Ok( await _controllerHelper.GetAll<TEntity, TEntityDTO>(
                 pageIndex,
                 pageSize,
-                predicate: x => x.CarID == carID,
+                predicate: x => x.CarId == carId,
                 include: source => source.Include(y => y.Car).Include(y => y.Product)
                 ));
         }
 
         /// <summary>
-        /// Geting an item by id and carID
+        /// Geting an item by id and carId
         /// </summary>
-        [HttpGet("{id}/{carID}")]
-        public async Task<ActionResult<CarProductDTO>> GetCarProduct(int id, int carID)
+        [HttpGet("{id}/{carId}")]
+        public async Task<ActionResult<CarProductsDTO>> GetCarProduct(int id, int carId)
         {
             var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(
                 include: source => source.Include(y => y.Car).Include(y => y.Product),
-                predicate: x => x.CarID == carID && x.ProductID == id
+                predicate: x => x.CarId == carId && x.ProductId == id
                 );
 
             if (result == null)
-                return NotFound();
+                return NotFound($"There is no item with ID '{id}'");
             return Ok(result);
         }
 
         /// <summary>
-        /// Updating item by carID
+        /// Updating item by carId
         /// </summary>
-        [HttpPut("{id}/{carID}")]
-        public async Task<IActionResult> PutItem(int id, int carID, TEntityDTO carProductDTO)
+        [HttpPut("{id}/{carId}")]
+        public async Task<IActionResult> PutItem(int id, int carId, TEntityDTO carProductDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _controllerHelper.Update<TEntity, TEntityDTO>(
                 carProductDTO,
                 include: source => source.Include(y => y.Car).Include(y => y.Product),
-                predicate: x => x.ProductID == id && x.CarID == carID
+                predicate: x => x.ProductId == id && x.CarId == carId
                 );
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
 
         /// <summary>
         /// Posting new item
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<TEntity>> PostItem(TEntityDTO[] carProductDTO)
+        public async Task<IActionResult> PostItem(TEntityDTO[] carProductDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             await _controllerHelper.Create<TEntity, TEntityDTO>(carProductDTO);
 
             return NoContent();
@@ -86,18 +92,18 @@ namespace CSite.Controllers
         /// <summary>
         /// Deleting the existing item
         /// </summary>
-        [HttpDelete("{id}/{carID}")]
-        public async Task<IActionResult> DeleteItem(int id, int carID)
+        [HttpDelete("{id}/{carId}")]
+        public async Task<IActionResult> DeleteItem(int id, int carId)
         {
             var result = await _controllerHelper.Remove<TEntity>(
                 id,
                 include: source => source.Include(y => y.Car).Include(y => y.Product),
-                predicate: x => x.ProductID == id && x.CarID == carID
+                predicate: x => x.ProductId == id && x.CarId == carId
                 );
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
     }
 }

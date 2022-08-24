@@ -39,7 +39,7 @@ namespace CSite.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<List<TEntityDTO>>> GetbyId(int id, [FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize, predicate: x => x.ID == id);
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize, predicate: x => x.Id == id);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace CSite.Controllers
         [HttpGet("{id}/{type}")]
         public async Task<ActionResult<List<TEntityDTO>>> GetbyIdAndType(int id, int type, [FromQuery] int pageIndex = 1, int pageSize = 20)
         {
-            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize, predicate: x => x.AccountType == type && x.AccountID == id);
+            return await _controllerHelper.GetAll<TEntity, TEntityDTO>(pageIndex, pageSize, predicate: x => x.AccountType == type && x.AccountId == id);
         }
 
         /// <summary>
@@ -57,11 +57,14 @@ namespace CSite.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutItem(int id, TEntityDTO transactionsDTO)
         {
-            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(transactionsDTO, predicate: x => x.ID == id);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(transactionsDTO, predicate: x => x.Id == id);
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
 
 
@@ -69,11 +72,14 @@ namespace CSite.Controllers
         /// Posting new item
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<TEntity>> PostItem(TEntityDTO transactionsDTO)
+        public async Task<IActionResult> PostItem(TEntityDTO transactionsDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _controllerHelper.Create<TEntity, TEntityDTO>(transactionsDTO);
 
-            return CreatedAtAction("GetbyId", new { id = result.ID }, result);
+            return CreatedAtAction("GetbyId", new { id = result.Id }, new { Id = result.Id });
         }
 
         /// <summary>
@@ -82,11 +88,11 @@ namespace CSite.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id)
         {
-            var result = await _controllerHelper.Remove<TEntity>(id, predicate: x => x.ID == id);
+            var result = await _controllerHelper.Remove<TEntity>(id, predicate: x => x.Id == id);
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
     }
 }

@@ -6,28 +6,28 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CSite.Configurations.Entities
 {
-    public class CarConfiguration : IEntityTypeConfiguration<Car>
+    public class CarConfiguration : IEntityTypeConfiguration<Cars>
     {
-        public void Configure(EntityTypeBuilder<Car> builder)
+        public void Configure(EntityTypeBuilder<Cars> builder)
         {
             builder.HasData(
-                new Car
+                new Cars
                 {
-                    ID = 20,
+                    Id = 20,
                     Name = "new car 1",
                     Account = 200,
                     Notes = "Empty"
                 },
-                new Car
+                new Cars
                 {
-                    ID = 21,
+                    Id = 21,
                     Name = "new car 2",
                     Account = 201,
                     Notes = "Empty"
                 },
-                new Car
+                new Cars
                 {
-                    ID = 22,
+                    Id = 22,
                     Name = "new car 3",
                     Account = 202,
                     Notes = "Empty"

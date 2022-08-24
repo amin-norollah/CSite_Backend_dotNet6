@@ -15,9 +15,9 @@ namespace CSite.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IUnitOfWork<CSiteDbContext> _unitOfWork;
+        private readonly IUnitOfWork<CSiteDBContext> _unitOfWork;
 
-        public LoginController(IUnitOfWork<CSiteDbContext> unitOfWork)
+        public LoginController(IUnitOfWork<CSiteDBContext> unitOfWork)
 
         {
             _unitOfWork = unitOfWork;

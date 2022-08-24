@@ -8,11 +8,11 @@ namespace CSite.Helpers
 {
     public class ControllerHelper
     {
-        private readonly IUnitOfWork<CSiteDbContext> _unitOfWork;
+        private readonly IUnitOfWork<CSiteDBContext> _unitOfWork;
         private readonly IMapper _mapper;
 
         public ControllerHelper(
-            IUnitOfWork<CSiteDbContext> unitOfWork,
+            IUnitOfWork<CSiteDBContext> unitOfWork,
             IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -66,7 +66,8 @@ namespace CSite.Helpers
                 return false;
 
             //update
-            _unitOfWork.GetRepository<TEntity>().Update(_mapper.Map<TEntity>(data));
+            _mapper.Map(data, target);
+            _unitOfWork.GetRepository<TEntity>().Update(target);
             await _unitOfWork.SaveChangesAsync();
 
             return true;

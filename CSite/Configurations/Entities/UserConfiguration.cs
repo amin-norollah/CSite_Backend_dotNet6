@@ -11,24 +11,27 @@ namespace CSite.Configurations.Entities
             builder.HasData(
                 new Users
                 {
+                    Id = 1,
                     Name = "Amin",
                     Password = "csite@123",
                     Type = 0,
-                    CarID = 20
+                    CarId = 20
                 },
                 new Users
                 {
+                    Id=2,
                     Name = "Sara",
                     Password = "csite@123",
                     Type = 0,
-                    CarID = 21
+                    CarId = 21
                 },
                 new Users
                 {
+                    Id =3,
                     Name = "Javad",
                     Password = "csite@123",
                     Type = 1,
-                    CarID = 22
+                    CarId = 22
                 }
             );
         }

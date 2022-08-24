@@ -12,24 +12,24 @@ namespace CSite.Controllers
     [ApiVersion("1.0")]
     [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ImportRecieptController : ImportRecieptControllerGeneric<ImportReciept, ImportRecieptDTO>
+    public class ImportRecieptController : ImportRecieptControllerGeneric<ImportReciepts, ImportRecieptsDTO>
     {
         public ImportRecieptController(
-            IUnitOfWork<CSiteDbContext> unitOfWork,
+            IUnitOfWork<CSiteDBContext> unitOfWork,
             IMapper mapper,
             ControllerHelper _controllerHelper) : base(unitOfWork, mapper, _controllerHelper) { }
     }
 
     public class ImportRecieptControllerGeneric<TEntity, TEntityDTO> : ControllerBase
-        where TEntity : ImportReciept
-        where TEntityDTO : ImportRecieptDTO
+        where TEntity : ImportReciepts
+        where TEntityDTO : ImportRecieptsDTO
     {
         private readonly ControllerHelper _controllerHelper;
-        private readonly IUnitOfWork<CSiteDbContext> _unitOfWork;
+        private readonly IUnitOfWork<CSiteDBContext> _unitOfWork;
         private readonly IMapper _mapper;
 
         public ImportRecieptControllerGeneric(
-            IUnitOfWork<CSiteDbContext> unitOfWork,
+            IUnitOfWork<CSiteDBContext> unitOfWork,
             IMapper mapper,
             ControllerHelper controllerHelper
             )
@@ -55,10 +55,10 @@ namespace CSite.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TEntityDTO>> GetbyId(int id)
         {
-            var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(predicate: x => x.ID == id);
+            var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(predicate: x => x.Id == id);
 
             if (result == null)
-                return NotFound();
+                return NotFound($"There is no item with ID '{id}'");
             return Ok(result);
         }
 
@@ -68,11 +68,14 @@ namespace CSite.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTEntity(int id, TEntityDTO TEntityDTO)
         {
-            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(TEntityDTO, predicate: x => x.ID == id);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _controllerHelper.Update<TEntity, TEntityDTO>(TEntityDTO, predicate: x => x.Id == id);
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
 
         /// <summary>
@@ -81,43 +84,46 @@ namespace CSite.Controllers
         [HttpPost]
         public async Task<ActionResult<TEntity>> PostTEntity(TEntityDTO TEntityDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             //map
             var TEntity = _mapper.Map<TEntity>(TEntityDTO);
 
             Transactions tr = new Transactions()
             {
-                AccountID = TEntity.SupplierID,
+                AccountId = TEntity.SupplierId,
                 AccountType = (int)AccountType.Supplier,
                 Amount = TEntity.Remaining,
                 Type = (int)TransType.Paid,
                 Date = TEntity.Date,
-                OperationID = TEntity.ID,
+                OperationId = TEntity.Id,
                 Operation = (int)Operation.ImportReciept,
-                UserID = TEntity.UserID?? 0,
+                UserId = TEntity.UserId?? 0,
 
             };
             await _unitOfWork.GetRepository<Transactions>().InsertAsync(tr);
             await _unitOfWork.GetRepository<TEntity>().InsertAsync(TEntity);
 
-            var sup = await _unitOfWork.GetRepository<Supplier>().FindAsync(TEntity.SupplierID);
+            var sup = await _unitOfWork.GetRepository<Suppliers>().FindAsync(TEntity.SupplierId);
             sup.Account += TEntity.Remaining;
-            _unitOfWork.GetRepository<Supplier>().Update(sup);
+            _unitOfWork.GetRepository<Suppliers>().Update(sup);
 
             await _unitOfWork.SaveChangesAsync();
 
             //
             foreach (var item in TEntityDTO.importProducts)
             {
-                item.ID = TEntity.ID;
-                await _unitOfWork.GetRepository<ImportProduct>().InsertAsync(_mapper.Map<ImportProduct>(item));
+                item.Id = TEntity.Id;
+                await _unitOfWork.GetRepository<ImportProducts>().InsertAsync(_mapper.Map<ImportProducts>(item));
 
-                var product = await _unitOfWork.GetRepository<Product>().FindAsync(item.Product.ID);
+                var product = await _unitOfWork.GetRepository<Products>().FindAsync(item.Product.Id);
                 product.Quantity += item.Quantity;
-                _unitOfWork.GetRepository<Product>().Update(product);
+                _unitOfWork.GetRepository<Products>().Update(product);
             }
             await _unitOfWork.SaveChangesAsync();
 
-            return CreatedAtAction("GetbyId", new { id = TEntity.ID }, _mapper.Map<ImportProductDTO>(TEntity));
+            return CreatedAtAction("GetbyId", new { id = TEntity.Id }, _mapper.Map<ImportProductsDTO>(TEntity));
         }
 
         /// <summary>
@@ -126,11 +132,11 @@ namespace CSite.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTEntity(int id)
         {
-            var result = await _controllerHelper.Remove<ImportProduct>(id, predicate: x => x.ID == id);
+            var result = await _controllerHelper.Remove<ImportProducts>(id, predicate: x => x.Id == id);
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
     }
 }

@@ -4,30 +4,30 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CSite.Configurations.Entities
 {
-    public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
+    public class CustomerConfiguration : IEntityTypeConfiguration<Customers>
     {
-        public void Configure(EntityTypeBuilder<Customer> builder)
+        public void Configure(EntityTypeBuilder<Customers> builder)
         {
             builder.HasData(
-                new Supplier
+                new Suppliers
                 {
-                    ID = 500,
+                    Id = 500,
                     Name = "Customer 1",
                     Phone = "+902020",
                     Account = 210,
                     Notes = "Empty"
                 },
-                new Supplier
+                new Suppliers
                 {
-                    ID = 501,
+                    Id = 501,
                     Name = "Customer 2",
                     Phone = "+902020",
                     Account = 211,
                     Notes = "Empty"
                 },
-                new Supplier
+                new Suppliers
                 {
-                    ID = 502,
+                    Id = 502,
                     Name = "Customer 3",
                     Phone = "+902020",
                     Account = 212,

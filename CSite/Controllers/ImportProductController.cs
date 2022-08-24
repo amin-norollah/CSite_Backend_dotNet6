@@ -9,14 +9,14 @@ namespace CSite.Controllers
     [ApiVersion("1.0")]
     [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ImportProductController : ImportProductControllerGeneric<ImportProduct, ImportProductDTO>
+    public class ImportProductController : ImportProductControllerGeneric<ImportProducts, ImportProductsDTO>
     {
         public ImportProductController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
     }
 
     public class ImportProductControllerGeneric<TEntity, TEntityDTO> : ControllerBase
-        where TEntity : ImportProduct
-        where TEntityDTO : ImportProductDTO
+        where TEntity : ImportProducts
+        where TEntityDTO : ImportProductsDTO
     {
         private readonly ControllerHelper _controllerHelper;
 
@@ -37,13 +37,13 @@ namespace CSite.Controllers
         /// <summary>
         /// Geting an item by id
         /// </summary>
-        [HttpGet("{id}/{ReceiptID}")]
-        public async Task<ActionResult<TEntityDTO>> GetbyId(int id, int ReceiptID)
+        [HttpGet("{id}/{ReceiptId}")]
+        public async Task<ActionResult<TEntityDTO>> GetbyId(int id, int ReceiptId)
         {
-            var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(predicate: x => x.ProductID == id && x.ReceiptID == ReceiptID);
+            var result = await _controllerHelper.GetById<TEntity, TEntityDTO>(predicate: x => x.ProductId == id && x.ReceiptId == ReceiptId);
 
             if (result == null)
-                return NotFound();
+                return NotFound($"There is no item with ID '{id}'");
             return Ok(result);
         }
 
@@ -51,18 +51,21 @@ namespace CSite.Controllers
         /// <summary>
         /// Updating item
         /// </summary>
-        [HttpPut("{id}/{ReceiptID}")]
-        public async Task<IActionResult> PutTEntity(int id, int ReceiptID, TEntityDTO TEntityDTO)
+        [HttpPut("{id}/{ReceiptId}")]
+        public async Task<IActionResult> PutTEntity(int id, int ReceiptId, TEntityDTO TEntityDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _controllerHelper.Update<TEntity, TEntityDTO>(
                 TEntityDTO,
-                include: source => source.Include(y => y.Product).Include(y => y.ImportReciept),
-                predicate: x => x.ProductID == id && x.ReceiptID == ReceiptID
+                include: source => source.Include(y => y.Product).Include(y => y.Receipt),
+                predicate: x => x.ProductId == id && x.ReceiptId == ReceiptId
                 );
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
 
         // POST: api/TEntity
@@ -70,6 +73,9 @@ namespace CSite.Controllers
         [HttpPost]
         public async Task<ActionResult<TEntity>> PostTEntity(TEntityDTO[] TEntityDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             await _controllerHelper.Create<TEntity, TEntityDTO>(TEntityDTO);
 
             return NoContent();
@@ -78,14 +84,14 @@ namespace CSite.Controllers
 
         // DELETE: api/TEntity/5
 
-        [HttpDelete("{id}/{ReceiptID}")]
-        public async Task<IActionResult> DeleteTEntity(int id, int ReceiptID)
+        [HttpDelete("{id}/{ReceiptId}")]
+        public async Task<IActionResult> DeleteTEntity(int id, int ReceiptId)
         {
-            var result = await _controllerHelper.Remove<TEntity>(id, predicate: w => w.ProductID == id && w.ReceiptID == ReceiptID);
+            var result = await _controllerHelper.Remove<TEntity>(id, predicate: w => w.ProductId == id && w.ReceiptId == ReceiptId);
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
     }
 }

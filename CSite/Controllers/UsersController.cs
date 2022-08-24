@@ -13,7 +13,7 @@ namespace CSite.Controllers
     public class UsersController : UsersControllerGeneric<Users, UsersDTO>
     {
         public UsersController(
-            IUnitOfWork<CSiteDbContext> unitOfWork,
+            IUnitOfWork<CSiteDBContext> unitOfWork,
             IMapper mapper) : base(unitOfWork, mapper)
         {
         }
@@ -23,11 +23,11 @@ namespace CSite.Controllers
         where TEntity : Users
         where TEntityDTO : UsersDTO
     {
-        private readonly IUnitOfWork<CSiteDbContext> _unitOfWork;
+        private readonly IUnitOfWork<CSiteDBContext> _unitOfWork;
         private readonly IMapper _mapper;
 
         public UsersControllerGeneric(
-            IUnitOfWork<CSiteDbContext> unitOfWork,
+            IUnitOfWork<CSiteDBContext> unitOfWork,
             IMapper mapper)
         {
             _unitOfWork = unitOfWork;

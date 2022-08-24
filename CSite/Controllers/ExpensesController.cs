@@ -37,10 +37,10 @@ namespace CSite.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TEntity>> GetbyId(int id)
         {
-            var result = await _controllerHelper.GetById<TEntity, TEntity>(predicate: x => x.ID == id);
+            var result = await _controllerHelper.GetById<TEntity, TEntity>(predicate: x => x.Id == id);
 
             if (result == null)
-                return NotFound();
+                return NotFound($"There is no item with ID '{id}'");
             return Ok(result);
         }
 
@@ -50,22 +50,28 @@ namespace CSite.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutItem(int id, TEntity expenses)
         {
-            var result = await _controllerHelper.Update<TEntity, TEntity>(expenses, predicate: x => x.ID == id);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _controllerHelper.Update<TEntity, TEntity>(expenses, predicate: x => x.Id == id);
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
 
         /// <summary>
         /// Posting new item
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<TEntity>> PostItem(TEntity expenses)
+        public async Task<IActionResult> PostItem(TEntity expenses)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _controllerHelper.Create<TEntity, TEntity>(expenses);
 
-            return CreatedAtAction("GetbyId", new { id = result.ID }, result);
+            return CreatedAtAction("GetbyId", new { id = result.Id }, new { Id = result.Id });
         }
 
         /// <summary>
@@ -74,11 +80,11 @@ namespace CSite.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id)
         {
-            var result = await _controllerHelper.Remove<TEntity>(id, predicate: x => x.ID == id);
+            var result = await _controllerHelper.Remove<TEntity>(id, predicate: x => x.Id == id);
 
             if (result)
                 return NoContent();
-            else return BadRequest();
+            else return BadRequest($"There is no item with ID '{id}'");
         }
     }
 }

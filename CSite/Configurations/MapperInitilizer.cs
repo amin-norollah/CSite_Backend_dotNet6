@@ -9,35 +9,34 @@ namespace CSite.Configurations
         public MapperInitilizer()
         {
             //CarController
-            CreateMap<List<CarDTO>, List<Car>>().ReverseMap();
-            CreateMap<CarDTO, Car>().ReverseMap();
+            CreateMap<CarsDTO, Cars>().ReverseMap();
 
             //CarProductController
-            CreateMap<CarProductDTO, CarProduct>().ReverseMap();
+            CreateMap<CarProductsDTO, CarProducts>().ReverseMap();
 
             //ExpensesController
             CreateMap<Expenses, Expenses>().ReverseMap();
 
             //CustomerController
-            CreateMap<CustomerDTO, Customer>().ReverseMap();
+            CreateMap<CustomersDTO, Customers>().ReverseMap();
 
             //ExportProductController
-            CreateMap<ExportProductDTO, ExportProduct>().ReverseMap();
+            CreateMap<ExportProductsDTO, ExportProducts>().ReverseMap();
 
             //ExportRecieptController
-            CreateMap<ExportReciept, ExportRecieptDTO>().ReverseMap();
+            CreateMap<ExportReciepts, ExportRecieptsDTO>().ReverseMap();
 
             //ImportProductController
-            CreateMap<ImportProduct, ImportProductDTO>().ReverseMap();
+            CreateMap<ImportProducts, ImportProductsDTO>().ReverseMap();
 
             //ImportRecieptController
-            CreateMap<ImportReciept, ImportRecieptDTO>().ReverseMap();
+            CreateMap<ImportReciepts, ImportRecieptsDTO>().ReverseMap();
 
             //ProductController
-            CreateMap<Product, ProductDTO>().ReverseMap();
+            CreateMap<Products, ProductsDTO>().ReverseMap();
 
             //SupplierController
-            CreateMap<Supplier, SupplierDTO>().ReverseMap();
+            CreateMap<Suppliers, SuppliersDTO>().ReverseMap();
 
             //TransactionsController
             CreateMap<Transactions, TransactionsDTO>().ReverseMap();

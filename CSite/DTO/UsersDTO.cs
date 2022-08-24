@@ -6,7 +6,7 @@
         public string Name { get; set; }
         public string Password { get; set; }
         public int Type { get; set; }
-        public int? CarID { get; set; }
+        public int? CarId { get; set; }
 
     }
 }

@@ -10,7 +10,22 @@
       "ProjectGuid": "a3a99c28-5273-4df5-accf-53e3955cdfc7",
       "DisplayName": "CSite.Shared",
       "ColorIndex": 1
+    },
+    "f17dc377-4c41-43dd-8d84-97a6cd8a6e93": {
+      "ProjectGuid": "f17dc377-4c41-43dd-8d84-97a6cd8a6e93",
+      "DisplayName": "CSite.Identity",
+      "ColorIndex": 2
+    },
+    "35be82e6-659a-498e-b03d-8b4f49cdb67b": {
+      "ProjectGuid": "35be82e6-659a-498e-b03d-8b4f49cdb67b",
+      "DisplayName": "CSite.Shared",
+      "ColorIndex": 3
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
     }
   },
-  "NextColorIndex": 2
+  "NextColorIndex": 4
 }
