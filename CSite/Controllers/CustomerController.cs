@@ -8,14 +8,15 @@ namespace CSite.Controllers
     [ApiVersion("1.0")]
     [Route("api/{version:apiVersion}/[controller]")]
     [ApiController]
-    public class CustomerController : CustomerControllerGeneric<Customers, CustomersDTO>
+    public class CustomerController : CustomerControllerGeneric<Customers, CustomersDTO, CustomersDTO_Create>
     {
         public CustomerController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
     }
 
-    public class CustomerControllerGeneric<TEntity, TEntityDTO> : ControllerBase
+    public class CustomerControllerGeneric<TEntity, TEntityDTO, TEntityDTO_Create> : ControllerBase
         where TEntity : Customers
         where TEntityDTO : CustomersDTO
+        where TEntityDTO_Create : CustomersDTO_Create
     {
         private readonly ControllerHelper _controllerHelper;
 
@@ -66,12 +67,12 @@ namespace CSite.Controllers
         /// Posting new item
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> PostItem(TEntityDTO customerDTO)
+        public async Task<IActionResult> PostItem(TEntityDTO_Create customerDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _controllerHelper.Create<TEntity, TEntityDTO>(customerDTO);
+            var result = await _controllerHelper.Create<TEntity, TEntityDTO_Create>(customerDTO);
 
             return CreatedAtAction("GetbyId", new { id = result.Id }, new { Id = result.Id });
         }

@@ -3,6 +3,7 @@ using CSite.DbContexts;
 using CSite.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace CSite.Helpers
 {
@@ -77,6 +78,11 @@ namespace CSite.Helpers
             where TEntity : class
             where TEntityDTO : class
         {
+            //remove id from requested data
+            var property = data.GetType().GetProperty("Id");
+            if (property != null)
+                property.SetValue(data, null, null);
+
             var target = _mapper.Map<TEntity>(data);
             await _unitOfWork.GetRepository<TEntity>().InsertAsync(target);
             await _unitOfWork.SaveChangesAsync();
@@ -89,9 +95,17 @@ namespace CSite.Helpers
             where TEntity : class
             where TEntityDTO : class
         {
+            PropertyInfo property;
+            TEntity target;
+
             foreach (var item in data)
             {
-                var target = _mapper.Map<TEntity>(item);
+                //remove id from requested data
+                property = item.GetType().GetProperty("Id");
+                if (property != null)
+                    property.SetValue(item, null, null);
+
+                target = _mapper.Map<TEntity>(item);
                 await _unitOfWork.GetRepository<TEntity>().InsertAsync(target);
                 await _unitOfWork.SaveChangesAsync();
             }

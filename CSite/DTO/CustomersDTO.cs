@@ -4,6 +4,11 @@ namespace CSite.DTO
 {
     public class CustomersDTO
     {
+        public int Id { get; set; }
+    }
+
+    public class CustomersDTO_Create
+    {
         [Required]
         [StringLength(maximumLength: 20, ErrorMessage = "Name Is Too Long")]
         public string Name { get; set; }
