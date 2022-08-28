@@ -17,7 +17,7 @@ This educational web API is built using .NET Core 6.0 and helps the student lear
 - Using DTOs and Authomapper
 - Versioning
 
-## How to install and run
+## How to use
 
 To begin with this project please follow the below instructions:
 
