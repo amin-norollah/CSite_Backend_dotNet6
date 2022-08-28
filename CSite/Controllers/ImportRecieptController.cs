@@ -5,6 +5,7 @@ using CSite.Helpers;
 using CSite.Models;
 using CSite.Shared.Interfaces;
 using CSite.Structures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CSite.Controllers
@@ -20,6 +21,7 @@ namespace CSite.Controllers
             ControllerHelper _controllerHelper) : base(unitOfWork, mapper, _controllerHelper) { }
     }
 
+    [Authorize]
     public class ImportRecieptControllerGeneric<TEntity, TEntityDTO> : ControllerBase
         where TEntity : ImportReciepts
         where TEntityDTO : ImportRecieptsDTO

@@ -21,7 +21,7 @@
       "dotnetRunMessages": "true",
       "launchBrowser": true,
       "hotReloadProfile": "aspnetcore",
-      "applicationUrl": "https://localhost:8088;http://localhost:8087",
+      "applicationUrl": "https://localhost:8800;http://localhost:8801",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"

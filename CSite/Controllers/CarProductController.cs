@@ -1,6 +1,7 @@
 ﻿using CSite.DTO;
 using CSite.Helpers;
 using CSite.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ namespace CSite.Controllers
         public CarProductController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
     }
 
+    [Authorize]
     public class CarProductControllerGeneric<TEntity, TEntityDTO> : ControllerBase
         where TEntity : CarProducts
         where TEntityDTO : CarProductsDTO

@@ -26,7 +26,7 @@ namespace CSite.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("sqlConnection")));
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
@@ -39,6 +39,7 @@ namespace CSite.Identity
                 options.EmitStaticAudienceClaim = true;
             }).AddInMemoryIdentityResources(SD.IdentityResources)
             .AddInMemoryApiScopes(SD.ApiScopes)
+            .AddInMemoryApiResources(SD.ApiResources)
             .AddInMemoryClients(SD.Clients)
             .AddAspNetIdentity<ApplicationUser>();
 

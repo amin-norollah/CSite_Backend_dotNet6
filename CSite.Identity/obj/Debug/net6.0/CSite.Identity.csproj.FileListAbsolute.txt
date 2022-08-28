@@ -387,3 +387,4 @@ G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\ref\CSite.
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\CSite.Identity.pdb
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\CSite.Identity.genruntimeconfig.cache
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\refint\CSite.Identity.dll
+G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\keys\is-signing-key-37529EB85A5BDB833561C609E698F5B6.json

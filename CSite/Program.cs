@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 ///////////////////////////////////////////////////////////
@@ -65,21 +66,49 @@ builder.Services.AddVersionedApiExplorer(setup =>
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("1.0", new OpenApiInfo { Title = "CSite API", Version = "1.0" });
+
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.OAuth2,
+        Flows = new OpenApiOAuthFlows
+        {
+            AuthorizationCode = new OpenApiOAuthFlow
+            {
+                AuthorizationUrl = new Uri("https://localhost:8800/connect/authorize"),
+                TokenUrl = new Uri("https://localhost:8800/connect/token"),
+                Scopes = new Dictionary<string, string>
+                {
+                    {"CSite_API", "CSite API scope for test."}
+                }
+            }
+        }
+    });
+
+    options.OperationFilter<AuthorizeCheckOperationFilter>();
 });
 
-// Adding simple and basic authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+//security
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+//builder.Services.AddAuthentication("Bearer")
+//    .AddJwtBearer("Bearer", options =>
+//    {
+//        options.Authority = "https://localhost:8800/";
+//        options.RequireHttpsMetadata = false;
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateAudience = false
+//        };
+//    });
+
+builder.Services.AddAuthentication("Bearer")
+    .AddIdentityServerAuthentication("Bearer", options =>
     {
-        ValidateLifetime = true,
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV"))
-    };
-});
+        // required audience of access tokens
+        options.ApiName = "CSite_API";
+
+        // auth server base endpoint (this will be used to search for disco doc)
+        options.Authority = "https://localhost:8800";
+    });
 
 // Adding CORS
 builder.Services.AddCors(o =>
@@ -119,6 +148,10 @@ if (app.Environment.IsDevelopment())
         foreach (var description in provider.ApiVersionDescriptions)
             c.SwaggerEndpoint(
                $"{swaggerJsonBasePath}/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+
+        c.OAuthClientId("CSite_swagger_client");
+        c.OAuthAppName("Swagger UI for CSite");
+        c.OAuthUsePkce();
     });
 }
 

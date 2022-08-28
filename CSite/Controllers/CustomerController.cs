@@ -1,6 +1,7 @@
 ﻿using CSite.DTO;
 using CSite.Helpers;
 using CSite.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CSite.Controllers
@@ -13,6 +14,7 @@ namespace CSite.Controllers
         public CustomerController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
     }
 
+    [Authorize]
     public class CustomerControllerGeneric<TEntity, TEntityDTO, TEntityDTO_Create> : ControllerBase
         where TEntity : Customers
         where TEntityDTO : CustomersDTO

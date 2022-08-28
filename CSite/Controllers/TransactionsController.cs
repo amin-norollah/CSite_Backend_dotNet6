@@ -1,6 +1,7 @@
 ﻿using CSite.DTO;
 using CSite.Helpers;
 using CSite.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CSite.Controllers
@@ -13,6 +14,7 @@ namespace CSite.Controllers
         public TransactionsController(ControllerHelper _controllerHelper) : base(_controllerHelper) { }
     }
 
+    [Authorize]
     public class TransactionsControllerGeneric<TEntity, TEntityDTO> : ControllerBase
         where TEntity : Transactions
         where TEntityDTO : TransactionsDTO
