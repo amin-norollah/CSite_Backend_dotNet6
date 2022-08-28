@@ -1,6 +1,8 @@
 # CSite Backend
 
-It would be an interesting project to help my student to learn how to use modern technologies, frameworks, and libraries in developing the .Net back-end.
+CSite is a sample open-source .Net 6 backend project using cutting-edge technologies.
+
+It would be an interesting project to help beginners to learn how to use modern technologies, frameworks, and libraries in developing the .Net back-end.
 
 This educational web API is built using .NET Core 6.0 and helps the student learn the following items:
 - Build data-driven RESTful API
