@@ -76,7 +76,7 @@ namespace CSite.Controllers
 
             var result = await _controllerHelper.Create<TEntity, TEntityDTO>(carDTO);
 
-            return CreatedAtAction("GetbyId", new { id = result.Id }, new{ Id= result.Id });
+            return CreatedAtAction("GetbyId", new { id = result.Id }, new { Id = result.Id });
         }
 
         /// <summary>

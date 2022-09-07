@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace CSite.Data.Entities
+﻿namespace CSite.Data.Entities
 {
     //[NotMapped]
     public partial class AspNetUsers

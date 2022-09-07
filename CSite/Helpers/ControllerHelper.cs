@@ -22,7 +22,7 @@ namespace CSite.Helpers
 
 
         public async Task<List<TEntityDTO>> GetAll<TEntity, TEntityDTO>(
-            int pageIndex, 
+            int pageIndex,
             int pageSize,
             Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)
@@ -31,7 +31,7 @@ namespace CSite.Helpers
         {
             var outputs = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(
                 pageIndex: pageIndex,
-                pageSize: pageSize, 
+                pageSize: pageSize,
                 predicate: predicate,
                 include: include);
             return _mapper.Map<List<TEntityDTO>>(outputs.ToList());
@@ -75,7 +75,7 @@ namespace CSite.Helpers
             //update
             _mapper.Map(data, target);
             if (property != null) //set id
-                property.SetValue(target, id ,null);
+                property.SetValue(target, id, null);
             _unitOfWork.GetRepository<TEntity>().Update(target);
             await _unitOfWork.SaveChangesAsync();
 

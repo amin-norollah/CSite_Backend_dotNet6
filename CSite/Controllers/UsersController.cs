@@ -4,8 +4,6 @@ using CSite.Data.DTO;
 using CSite.Data.Entities;
 using CSite.Shared.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace CSite.Controllers
 {

@@ -3,17 +3,14 @@ using CSite.Configurations;
 using CSite.Data.DdContexts;
 using CSite.Helpers;
 using CSite.Shared;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

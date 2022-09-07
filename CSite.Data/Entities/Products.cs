@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CSite.Data.Entities
+﻿namespace CSite.Data.Entities
 {
     public partial class Products
     {

@@ -31,7 +31,7 @@ namespace CSite.Identity.Initializer
 
             ApplicationUser adminUser = new ApplicationUser()
             {
-                Id= "4cd6cba2-4950-42a2-bb48-14f09aef239d",
+                Id = "4cd6cba2-4950-42a2-bb48-14f09aef239d",
                 UserName = "admin",
                 Email = "admin1@gmail.com",
                 EmailConfirmed = true,
