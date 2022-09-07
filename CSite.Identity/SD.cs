@@ -7,7 +7,7 @@ namespace CSite.Identity
     public static class SD
     {
         public const string Admin = "Admin";
-        public const string Editor = "Editor";
+        public const string Supplier = "Supplier";
         public const string Customer = "Customer";
 
         public static IEnumerable<IdentityResource> IdentityResources =>

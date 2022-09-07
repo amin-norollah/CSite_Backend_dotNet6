@@ -39,6 +39,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\CSite.Data\CSite.Data.csproj" />
 		<ProjectReference Include="..\CSite.Shared\CSite.Shared.csproj" />
 	</ItemGroup>
 

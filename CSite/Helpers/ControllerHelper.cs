@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CSite.DbContexts;
+using CSite.Data.DdContexts;
 using CSite.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
@@ -66,8 +66,16 @@ namespace CSite.Helpers
             if (target == null)
                 return false;
 
+            //save id from target data
+            object id = null;
+            var property = target.GetType().GetProperty("Id");
+            if (property != null)
+                id = property.GetValue(target);
+
             //update
             _mapper.Map(data, target);
+            if (property != null) //set id
+                property.SetValue(target, id ,null);
             _unitOfWork.GetRepository<TEntity>().Update(target);
             await _unitOfWork.SaveChangesAsync();
 

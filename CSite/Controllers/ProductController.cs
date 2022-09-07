@@ -1,6 +1,6 @@
-﻿using CSite.DTO;
-using CSite.Helpers;
-using CSite.Models;
+﻿using CSite.Helpers;
+using CSite.Data.DTO;
+using CSite.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using CSite.DTO;
-using CSite.Models;
+using CSite.Data.DTO;
+using CSite.Data.Entities;
 
 namespace CSite.Configurations
 {
@@ -8,41 +8,11 @@ namespace CSite.Configurations
     {
         public MapperInitilizer()
         {
-            //CarController
-            CreateMap<CarsDTO, Cars>().ReverseMap();
-
-            //CarProductController
-            CreateMap<CarProductsDTO, CarProducts>().ReverseMap();
-
-            //ExpensesController
-            CreateMap<Expenses, Expenses>().ReverseMap();
-
-            //CustomerController
-            CreateMap<CustomersDTO, Customers>().ReverseMap();
-
-            //ExportProductController
-            CreateMap<ExportProductsDTO, ExportProducts>().ReverseMap();
-
-            //ExportRecieptController
-            CreateMap<ExportReciepts, ExportRecieptsDTO>().ReverseMap();
-
-            //ImportProductController
-            CreateMap<ImportProducts, ImportProductsDTO>().ReverseMap();
-
-            //ImportRecieptController
-            CreateMap<ImportReciepts, ImportRecieptsDTO>().ReverseMap();
-
-            //ProductController
+            CreateMap<Cars, CarsDTO>().ReverseMap();
             CreateMap<Products, ProductsDTO>().ReverseMap();
-
-            //SupplierController
-            CreateMap<Suppliers, SuppliersDTO>().ReverseMap();
-
-            //TransactionsController
-            CreateMap<Transactions, TransactionsDTO>().ReverseMap();
-
-            //UsersController
-            CreateMap<Users, UsersDTO>().ReverseMap();
+            CreateMap<AspNetRoles, RolesDTO>().ReverseMap();
+            CreateMap<Receipts, ReceiptsDTO>().ReverseMap();
+            CreateMap<AspNetUsers, UsersDTO>().ReverseMap();
         }
     }
 }

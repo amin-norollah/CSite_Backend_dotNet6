@@ -1,6 +1,6 @@
 using AutoWrapper;
 using CSite.Configurations;
-using CSite.DbContexts;
+using CSite.Data.DdContexts;
 using CSite.Helpers;
 using CSite.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

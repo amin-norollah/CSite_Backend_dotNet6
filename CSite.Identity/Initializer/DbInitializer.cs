@@ -25,21 +25,22 @@ namespace CSite.Identity.Initializer
             {
                 _roleManager.CreateAsync(new IdentityRole(SD.Admin)).GetAwaiter().GetResult();
                 _roleManager.CreateAsync(new IdentityRole(SD.Customer)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(SD.Editor)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(SD.Supplier)).GetAwaiter().GetResult();
             }
             else { return; }
 
             ApplicationUser adminUser = new ApplicationUser()
             {
+                Id= "4cd6cba2-4950-42a2-bb48-14f09aef239d",
                 UserName = "admin",
                 Email = "admin1@gmail.com",
                 EmailConfirmed = true,
-                PhoneNumber = "111111111111",
+                PhoneNumber = "(+1) 343 5672 322",
                 FirstName = "Amin",
-                LastName = "Administrator"
+                LastName = "Norollah"
             };
 
-            _userManager.CreateAsync(adminUser, "Admin123*").GetAwaiter().GetResult();
+            _userManager.CreateAsync(adminUser, "CSite@123").GetAwaiter().GetResult();
             _userManager.AddToRoleAsync(adminUser, SD.Admin).GetAwaiter().GetResult();
 
             var temp1 = _userManager.AddClaimsAsync(adminUser, new Claim[] {
@@ -51,15 +52,16 @@ namespace CSite.Identity.Initializer
 
             ApplicationUser customerUser = new ApplicationUser()
             {
+                Id = "5cd6cba2-4950-42a2-bb48-14f09aef239d",
                 UserName = "customer",
                 Email = "customer1@gmail.com",
                 EmailConfirmed = true,
-                PhoneNumber = "111111111111",
-                FirstName = "Ali",
-                LastName = "Molaii"
+                PhoneNumber = "(+1) 343 5672 322",
+                FirstName = "Joe",
+                LastName = "Morgan"
             };
 
-            _userManager.CreateAsync(customerUser, "Admin123*").GetAwaiter().GetResult();
+            _userManager.CreateAsync(customerUser, "CSite@123").GetAwaiter().GetResult();
             _userManager.AddToRoleAsync(customerUser, SD.Customer).GetAwaiter().GetResult();
 
             var temp2 = _userManager.AddClaimsAsync(customerUser, new Claim[] {
@@ -71,22 +73,23 @@ namespace CSite.Identity.Initializer
 
             ApplicationUser editorUser = new ApplicationUser()
             {
-                UserName = "editor",
-                Email = "editor1@gmail.com",
+                Id = "6cd6cba2-4950-42a2-bb48-14f09aef239d",
+                UserName = "supplier",
+                Email = "supplier1@gmail.com",
                 EmailConfirmed = true,
-                PhoneNumber = "111111111111",
-                FirstName = "Maryam",
-                LastName = "Editor"
+                PhoneNumber = "(+1) 343 5672 322",
+                FirstName = "Sara",
+                LastName = "Jackson"
             };
 
-            _userManager.CreateAsync(editorUser, "Admin123*").GetAwaiter().GetResult();
-            _userManager.AddToRoleAsync(editorUser, SD.Editor).GetAwaiter().GetResult();
+            _userManager.CreateAsync(editorUser, "CSite@123").GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(editorUser, SD.Supplier).GetAwaiter().GetResult();
 
             var temp3 = _userManager.AddClaimsAsync(editorUser, new Claim[] {
                 new Claim(JwtClaimTypes.Name,editorUser.FirstName+" "+ editorUser.LastName),
                 new Claim(JwtClaimTypes.GivenName,editorUser.FirstName),
                 new Claim(JwtClaimTypes.FamilyName,editorUser.LastName),
-                new Claim(JwtClaimTypes.Role,SD.Editor),
+                new Claim(JwtClaimTypes.Role,SD.Supplier),
             }).Result;
         }
     }
