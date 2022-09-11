@@ -57,7 +57,7 @@ namespace CSite.Identity
                 {
                     ClientId = "CSite_swagger_client",
                     ClientName = "Swagger UI for CSite",
-                    ClientSecrets = {new Secret("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV".Sha256())}, // change me!
+                    ClientSecrets = {new Secret("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV".Sha256())}, // change it!
 
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
@@ -72,6 +72,24 @@ namespace CSite.Identity
                         "https://localhost:4200"
                     },
                     AllowedScopes= { "CSite_API" }
+                },
+
+                // Angular (Password grant type)
+                new Client
+                {
+                    ClientId = "CSite_angular",
+                    ClientName = "Angular UI for CSite",
+                    ClientSecrets = {new Secret("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV".Sha256())}, // change it!
+
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    RequireClientSecret = false,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris = {"https://localhost:4200/oauth2-redirect.html"},
+                    AllowedCorsOrigins = new List<string>
+                    {
+                        "https://localhost:4200"
+                    },
                 }
             };
     }
