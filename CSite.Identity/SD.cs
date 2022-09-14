@@ -39,15 +39,27 @@ namespace CSite.Identity
                 new Client
                 {
                     ClientId="CSite_client",
-                    ClientSecrets= { new Secret("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV".Sha256())},
+                    ClientSecrets= { new Secret("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV".Sha256())}, //TODO: need to be changed!
+                    RequireClientSecret=false,
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                    RedirectUris={ "https://localhost:8088/signin-oidc" },
-                    PostLogoutRedirectUris={"https://localhost:8088/signout-callback-oidc" },
+                    RedirectUris=new List<string>{
+                        "https://localhost:4200/signin-callback" ,
+                        "https://localhost:4200/silent-callback"
+                    },
+                    PostLogoutRedirectUris={"https://localhost:4200/signout-callback" },
+                    AllowedCorsOrigins = new List<string>
+                    {
+                        "http://localhost:4200",
+                        "https://localhost:4200"
+                    },
+                    AllowOfflineAccess = true,
                     AllowedScopes=new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
+                        "roles",
                         "CSite_API"
                     }
                 },
@@ -57,7 +69,7 @@ namespace CSite.Identity
                 {
                     ClientId = "CSite_swagger_client",
                     ClientName = "Swagger UI for CSite",
-                    ClientSecrets = {new Secret("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV".Sha256())}, // change it!
+                    ClientSecrets = {new Secret("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV".Sha256())}, //TODO: need to be changed!
 
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
@@ -73,24 +85,6 @@ namespace CSite.Identity
                     },
                     AllowedScopes= { "CSite_API" }
                 },
-
-                // Angular (Password grant type)
-                new Client
-                {
-                    ClientId = "CSite_angular",
-                    ClientName = "Angular UI for CSite",
-                    ClientSecrets = {new Secret("s923r4jvJ-DSvsxoi8y-9vJDf6-832bnFV".Sha256())}, // change it!
-
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                    RequireClientSecret = false,
-                    AllowAccessTokensViaBrowser = true,
-
-                    RedirectUris = {"https://localhost:4200/oauth2-redirect.html"},
-                    AllowedCorsOrigins = new List<string>
-                    {
-                        "https://localhost:4200"
-                    },
-                }
             };
     }
 }

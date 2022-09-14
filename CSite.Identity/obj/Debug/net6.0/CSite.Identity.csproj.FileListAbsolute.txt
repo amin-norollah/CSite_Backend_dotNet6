@@ -1,7 +1,8 @@
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\appsettings.Development.json
-G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\keys\is-signing-key-00033EE53693D324AA1BB67AA8720B09.json
-G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\keys\is-signing-key-572E35F76C92766AFB6BFCDEEA1A548B.json
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\appsettings.json
+G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\keys\is-signing-key-00033EE53693D324AA1BB67AA8720B09.json
+G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\keys\is-signing-key-37529EB85A5BDB833561C609E698F5B6.json
+G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\keys\is-signing-key-572E35F76C92766AFB6BFCDEEA1A548B.json
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\CSite.Identity.staticwebassets.runtime.json
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\CSite.Identity.exe
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\CSite.Identity.deps.json
@@ -383,8 +384,7 @@ G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\staticweba
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\scopedcss\bundle\CSite.Identity.styles.css
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\CSite.Identity.csproj.CopyComplete
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\CSite.Identity.dll
-G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\ref\CSite.Identity.dll
+G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\refint\CSite.Identity.dll
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\CSite.Identity.pdb
 G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\CSite.Identity.genruntimeconfig.cache
-G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\refint\CSite.Identity.dll
-G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\bin\Debug\net6.0\keys\is-signing-key-37529EB85A5BDB833561C609E698F5B6.json
+G:\Amin\Code\Github\CSite_Backend_Net\CSite.Identity\obj\Debug\net6.0\ref\CSite.Identity.dll
